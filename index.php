@@ -10,6 +10,24 @@ $app->get('/', function ($request, $response, $next) {
     return $response;
 });
 
+$beers = array(
+    'brands' => ['Heineken', 'Guinness', 'Skol', 'Colorado'],
+    'styles' => ['Pilsen' , 'Stout']
+);
+
+$app->get('/brands', function ($request, $response, $next) use ($beers) {
+    $response->getBody()->write(implode(',', $beers['brands']));
+
+    return $response;
+});
+
+$app->get('/styles', function ($request, $response, $next) use ($beers) {
+    $response->getBody()->write(implode(',', $beers['styles']));
+
+    return $response;
+});
+
+
 $app->pipeRoutingMiddleware();
 $app->pipeDispatchMiddleware();
 $app->run();
