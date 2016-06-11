@@ -1,7 +1,8 @@
 <?php
 use Zend\Expressive\AppFactory;
 
-require 'vendor/autoload.php';
+$loader = require 'vendor/autoload.php';
+$loader->add('RestBeer', __DIR__.'/src');
 
 $app = AppFactory::create();
 
@@ -16,15 +17,17 @@ $beers = array(
 );
 
 $app->get('/brands', function ($request, $response, $next) use ($beers) {
-    $response->getBody()->write(implode(',', $beers['brands']));
+    // $response->getBody()->write(implode(',', $beers['brands']));
+    $response->getBody()->write(serialize($beers['brands']));
 
-    return $response;
+    return $next($request, $response);
 });
 
 $app->get('/styles', function ($request, $response, $next) use ($beers) {
-    $response->getBody()->write(implode(',', $beers['styles']));
+    // $response->getBody()->write(implode(',', $beers['styles']));
+    $response->getBody()->write(serialize($beers['styles']));
 
-    return $response;
+    return $next($request, $response);
 });
 
 $app->get('/beer/{id}', function ($request, $response, $next) use ($beers) {
@@ -61,4 +64,5 @@ beer (id INTEGER PRIMARY KEY AUTOINCREMENT, name text not null, style text not n
 
 $app->pipeRoutingMiddleware();
 $app->pipeDispatchMiddleware();
+$app->pipe(new \RestBeer\Format());
 $app->run();
