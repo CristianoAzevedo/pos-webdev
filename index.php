@@ -62,6 +62,7 @@ beer (id INTEGER PRIMARY KEY AUTOINCREMENT, name text not null, style text not n
 });
 
 
+$app->pipe(new \RestBeer\Auth());
 $app->pipeRoutingMiddleware();
 $app->pipeDispatchMiddleware();
 $app->pipe(new \RestBeer\Format());
