@@ -11,8 +11,8 @@ $app->get('/', function ($request, $response, $next) {
 });
 
 $beers = array(
-    'brands' => ['Heineken', 'Guinness', 'Skol', 'Colorado'],
-    'styles' => ['Pilsen' , 'Stout']
+    'brands' => array('Heineken', 'Guinness', 'Skol', 'Colorado'),
+    'styles' => array('Pilsen' , 'Stout')
 );
 
 $app->get('/brands', function ($request, $response, $next) use ($beers) {
@@ -23,6 +23,17 @@ $app->get('/brands', function ($request, $response, $next) use ($beers) {
 
 $app->get('/styles', function ($request, $response, $next) use ($beers) {
     $response->getBody()->write(implode(',', $beers['styles']));
+
+    return $response;
+});
+
+$app->get('/beer/{id}', function ($request, $response, $next) use ($beers) {
+    $id = $request->getAttribute('id');
+    if (!isset($beers['brands'][$id])) {
+        return $response->withStatus(404);
+    }
+
+    $response->getBody()->write($beers['brands'][$id]);
 
     return $response;
 });
