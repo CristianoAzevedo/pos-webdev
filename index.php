@@ -7,7 +7,9 @@ $loader->add('RestBeer', __DIR__.'/src');
 $app = AppFactory::create();
 
 $app->get('/', function ($request, $response, $next) {
-    $response->getBody()->write('Hello, world!');
+    $session = $request->getAttribute(\PSR7Session\Http\SessionMiddleware::SESSION_ATTRIBUTE);
+    $session->set('counter', $session->get('counter', 0) + 1);
+    $response->getBody()->write('Hello, world!' . $session->get('counter'));
     return $response;
 });
 
@@ -61,7 +63,8 @@ beer (id INTEGER PRIMARY KEY AUTOINCREMENT, name text not null, style text not n
     return $response->withStatus(201);
 });
 
-
+$session = new \RestBeer\Session();
+$app->pipe($session->get());
 $app->pipe(new \RestBeer\Auth());
 $app->pipeRoutingMiddleware();
 $app->pipeDispatchMiddleware();
